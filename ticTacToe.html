@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+    <meta charset="UTF-8"> <!-- hidden in CodePen -->
+    <meta name="robots" content="noindex">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+
+
+
+    <link href="ticTacToe.css" rel="stylesheet" type="text/css"> <!-- embedded with <style> tags in CodePen -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+
+    <title>Tic Tac Toe</title>
+
+    <style>
+
+    </style>
+
+
+</head>
+
+<body>
+
+  <div class="bodyDiv">
+    <div class="borderDiv">
+      <div class="titleDiv">
+
+      </div>
+      <div class="gameResult" id="gameResult">
+        <span id="ggMsg"></span>
+      </div>
+      <div class="scoreDiv" id="scoreDiv">
+        <div class="block">
+          <div class="userScoreDiv">
+            <div><span class="score scoreText">User: </span></div>
+            <div><span class="score scoreNumber" id="userScore"></span></div>
+          </div>
+          <div class="resetScoreDiv" id="resetScoreDiv">
+            <div><span class="score scoreText" id="resetAll">Reset</span></div>
+            <div><span>&nbsp;</span></div>
+
+          </div>
+          <div class="computerScoreDiv">
+            <div><span class="score scoreText">Computer: </span></div>
+            <div><span class="score scoreNumber" id="computerScore"></span></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="chooseDiv" id="chooseDiv">
+        <div class="block"><div class="chooseTxt">Choose:</div></div>
+        <div class="chooseXO" id="choice0"></div><div class="chooseTxt"> or </div><div class="chooseXO" id="choice1"></div>
+      </div>
+      <div class="playDiv" id="playDiv">
+        <div class="row1">
+          <div class="field field0" id="field0">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field1" id="field1">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field2" id="field2">
+            <span class="fieldSpan"></span>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field field3" id="field3">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field4" id="field4">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field5" id="field5">
+            <span class="fieldSpan"></span>
+          </div>
+        </div>
+        <div class="row3">
+          <div class="field field6" id="field6">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field7" id="field7">
+            <span class="fieldSpan"></span>
+          </div>
+          <div class="field field8" id="field8">
+            <span class="fieldSpan"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="ticTacToe.js" rel="stylesheet" type="application/javascript"></script> <!-- embedded with <style> tags in CodePen -->
+</body>
+
+</html>
