@@ -1,8 +1,12 @@
+// AI computer moves are based on algotytm from http://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
+//
 var types = ["X", "O"];
 var userMark = types[0];
 var computerMark = types[1];
 //var userTurns = [];
 //var computerTurns = [];
+var cmpTurn = 1;
+var usrTurn = -1;
 var allTurns = []; // user -1; Computer = 1;
 var turnCnt = 0;
 var userScore = 0;
@@ -56,9 +60,9 @@ for(var i = 0; i < fields.length; ++i){
 }
 function computerTurnFcn(){
   if (turnCnt < 9){
-    var turn = generateTurn();
+    var turn = findBestMove();
     //computerTurns[turn] = true;
-    allTurns[turn] = 1;
+    allTurns[turn] = cmpTurn;
     document.getElementById("field"+turn).children[0].innerHTML = computerMark;
     ++turnCnt;
     if (gameOver()) {
@@ -82,7 +86,7 @@ function userTurnFcn(elem){
   var numb = elem.id.split("field")[1];
   if (validTurn(numb) && (turnCnt < 9)){
     //userTurns[numb] = true;
-    allTurns[numb] = -1;
+    allTurns[numb] = usrTurn;
     document.getElementById(elem.id).children[0].innerHTML = userMark;
     ++turnCnt;
     //userTurn ^= 1;
@@ -99,8 +103,91 @@ function userTurnFcn(elem){
 
   }
 }
+function isMovesLeft(){
+  if (turnCnt < 9) {
+    return false;
+  }
+  return true;
+}
+var depthBest = [1000, -1000, 1000, -1000, 1000, -1000, 1000, -1000, 1000,  -1000];
+function minimax(depth, isMax){
+  var score = gameOver();
+  var currTurnCnt = turnCnt;
+  if (score == 10){ // computer won
+    return score - depth; // substract to make the game as short as possible
+  }
+  if (score == -10){ // user won
+    return score + depth;  // add to make game as long as possible
+  }
+  if (turnCnt >= 9){
+    return 0;
+  }
+  var best;
+  var turnMark;
+  var turnPlayer;
+  var turnFcn;
+
+  if (isMax){ // it is computers turn
+    best = -1000;
+    turnMark = computerMark;
+    turnPlayer = cmpTurn;
+    turnFcn = Math.max;
+  }
+  else { // its users turn
+    best = 1000;
+    turnMark = userMark;
+    turnPlayer = usrTurn;
+    turnFcn = Math.min;
+  }
+
+    for (var i = 0; i < 9; i++){
+      if(!allTurns[i]){ // cell is empty
+        if ( ((depth % 2 == 0) && isMax) || ((depth % 2 == 1) && (!isMax)) ){ // every second is computers turn
+          console.log('Error: wrong player!');
+        }
+        allTurns[i] = turnPlayer;
+        document.getElementById("field"+i).children[0].innerHTML = turnMark;
+        turnCnt++;
+        var current = minimax(depth+1, (!isMax));
+        best = turnFcn(best, current);
+        depthBest[depth] = turnFcn(best,depthBest[depth]);
+        allTurns[i] = 0; // undo the move
+        document.getElementById("field"+i).children[0].innerHTML = "";
+        turnCnt = currTurnCnt;
+      }
+    }
+  return best;
+}
+
+function findBestMove(){
+  var currTurnCnt = turnCnt;
+  var bestVal = -1000;
+  var bestMove;
+  for (var i = 0; i < 9; i++){
+    if (allTurns[i] == undefined || allTurns[i] == 0){
+      allTurns[i] = cmpTurn;
+      document.getElementById("field"+i).children[0].innerHTML = computerMark;
+      document.getElementById("field"+i).children[0].style.color = "red";
+      turnCnt++;
+      var moveVal = minimax(0, false); // calculate best turn ...
+      allTurns[i] = 0;
+      document.getElementById("field"+i).children[0].innerHTML = "";
+      document.getElementById("field"+i).children[0].style.color = "";
+
+      turnCnt = currTurnCnt;
+       if(moveVal > bestVal){
+         bestMove = i;
+         bestVal = moveVal;
+       }
+    }
+  }
+  console.log("best move: " + bestMove + " best value: " + bestVal);
+  return bestMove;
+}
 
 function generateTurn(){
+  return findBestMove();
+/*
   var turn = Math.floor(Math.random()*9); // 0..8
   for (var i = 0; i < 9; i++){
     if (validTurn(turn)){
@@ -111,9 +198,10 @@ function generateTurn(){
     }
   }
   return turn;
+*/
 }
 function validTurn(turn){
-  if ( allTurns[turn] == undefined){
+  if ( allTurns[turn] == undefined || allTurns[turn] == 0){
     return true;
   }
   return false;
@@ -151,38 +239,38 @@ function gameOver(){
   var over = false;
   for (var i = 0; i < 3; ++i){
     over = checkRow(i);
-    if(over){ return true;}
+    if(over){ return over;}
     over = checkColumn(i);
-    if(over){ return true;}
+    if(over){ return over;}
   }
   over = checkDiag();
-  if(over){ return true;}
-  return false;
+  if(over){ return over;}
+  return 0;
 }
 function checkColumn(i){
   var sum = allTurns[i] + allTurns[3+i] + allTurns[2*3+i];
   if (sum == 3 || sum == -3){
-    return true;
+    return ((sum * 3) + (sum % 2)); // +10 or -10
   }
-  return false;
+  return 0;
 }
 function checkRow(i){
   var sum = allTurns[3*i] + allTurns[3*i+1] + allTurns[3*i+2];
   if (sum == 3 || sum == -3){
-    return true;
+    return ((sum * 3) + (sum % 2)); // +10 or -10
   }
-  return false;
+  return 0;
 }
 function checkDiag() {
   var sum = allTurns[0] + allTurns[4] + allTurns[8];
   if (sum == 3 || sum == -3){
-    return true;
+    return ((sum * 3) + (sum % 2)); // +10 or -10
   }
   sum = allTurns[2] + allTurns[4] + allTurns[6];
   if (sum == 3 || sum == -3){
-    return true;
+    return ((sum * 3) + (sum % 2)); // +10 or -10((sum * 3) + 1);
   }
-  return false;
+  return 0;
 }
 function resetAll(){
   computerScore = 0;
